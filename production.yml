@@ -1,0 +1,45 @@
+'''
+web-h5
+'''
+
+name: Build And Production
+on:
+  push:
+    branches:
+      - 'main'
+      - 'release/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout ode
+        uses: actions/checkout
+      - name: Set Node Version
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16"
+      - name: Install Dependencies
+        run: yarn install
+      - name: Run Linting Checks
+        run: yarn lint
+      - name: build application
+        run: yarn build
+      - name: Run Test
+        run: yarn test
+      - name: Build application
+        run: yarn build
+      - name: Deploy To Netlify
+        uses: nwtgck/actions-netlify@v1.2
+        with:
+          production-deploy: true
+          production-branch: 'main'
+          publish-dir: "./build"
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          deploy-message: "Deploy From Github Actions"
+          enable-pull-request-comment: false
+          enable-commit-comment: true
+          overwrites-pull-request-comment: true
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_TOKEN: ${{ secrets.NETLIFY_SITE_ID }}
