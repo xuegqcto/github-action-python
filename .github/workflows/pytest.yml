@@ -1,5 +1,9 @@
 name: pytest
-on: [push, workflow_dispatch]
+on:
+  push:
+    branches:
+      - master
+  workflow_dispatch:
 
 jobs:
   pytest:
@@ -7,16 +11,8 @@ jobs:
     steps:
       - name: print github action context
         run: echo ${{ github.repositoryUrl }}
-      - name: pre - checkout
-        run: |
-          pwd
-          ls -lh
       - name: checkout code
         uses: actions/checkout@v4
-      - name: after checkout
-        run: |
-          pwd
-          ls -lh
       - name: install pytest
         run: pip install pytest
       - name: run pytest
